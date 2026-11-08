@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h1>Make a portfolio</h1>
+  <p class="muted">Type the amount to invest. Select one or two strategies. The engine selects the stocks and ETFs and divides the money.</p>
+
+  <form method="post" action="{{ url_for('suggest') }}" id="suggest-form" novalidate>
+    <label class="field">
+      <span>Amount to invest (USD, minimum ${{ '{:,.0f}'.format(min_amount) }})</span>
+      <div class="money">
+        <span>$</span>
+        <input type="number" name="amount" id="amount" min="{{ min_amount|int }}" step="0.01"
+               placeholder="10000" value="{{ form.get('amount', '') }}" required>
+      </div>
+    </label>
+
+    <fieldset class="field">
+      <legend>Investment strategies (select one or two)</legend>
+      <div class="strategies">
+        {% for key, s in strategies.items() %}
+        <label class="strategy" id="card-{{ key }}">
+          <input type="checkbox" name="strategies" value="{{ key }}" id="s-{{ key }}"
+                 {% if key in form.get('strategies', []) %}checked{% endif %}>
+          <div>
+            <strong>{{ s.name }}</strong>
+            <p>{{ s.description }}</p>
+            <p class="symbols">
+              {% for h in s.holdings %}<span class="chip">{{ h.symbol }} {{ (h.weight*100)|round|int }}%</span>{% endfor %}
+            </p>
+          </div>
+        </label>
+        {% endfor %}
+      </div>
+    </fieldset>
+
+    <label class="field" id="split-field" hidden>
+      <span>Money split: <b id="split-label"></b></span>
+      <input type="range" name="split" id="split" min="{{ min_split }}" max="{{ max_split }}" step="5"
+             value="{{ form.get('split', 50) }}">
+    </label>
+
+    <div class="actions">
+      <button type="submit" class="primary" id="submit">Suggest portfolio</button>
+      {% if has_portfolio %}<a class="button" href="{{ url_for('show_portfolio') }}" id="view-last">View last portfolio</a>{% endif %}
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  const boxes = Array.from(document.querySelectorAll('input[name="strategies"]'));
+  const names = {{ strategies|tojson }};
+  const splitField = document.getElementById('split-field');
+  const split = document.getElementById('split');
+  const label = document.getElementById('split-label');
+
+  function update() {
+    const checked = boxes.filter(b => b.checked);
+    // Do not let the user select more than two strategies.
+    boxes.forEach(b => {
+      b.disabled = !b.checked && checked.length >= 2;
+      b.closest('.strategy').classList.toggle('selected', b.checked);
+      b.closest('.strategy').classList.toggle('disabled', b.disabled);
+    });
+    splitField.hidden = checked.length !== 2;
+    if (checked.length === 2) {
+      const a = names[checked[0].value].name, b = names[checked[1].value].name;
+      label.textContent = `${split.value}% ${a} / ${100 - split.value}% ${b}`;
+    }
+  }
+  boxes.forEach(b => b.addEventListener('change', update));
+  split.addEventListener('input', update);
+  update();
+})();
+</script>
+{% endblock %}
