@@ -122,6 +122,6 @@ def now_utc():
 
 def default_market():
     """Return OfflineMarket if PORTFOLIO_OFFLINE=1. Else return LiveMarket."""
-    if os.environ.get("PORTFOLIO_OFFLINE") == "1":
+    if os.environ.get("PORTFOLIO_OFFLINE", "").strip() == "1":
         return OfflineMarket()
     return LiveMarket()
