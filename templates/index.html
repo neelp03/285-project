@@ -1,12 +1,19 @@
 {% extends "base.html" %}
-{% block content %}
-<section class="card">
-  <h1>Make a portfolio</h1>
-  <p class="muted">Type the amount to invest. Select one or two strategies. The engine selects the stocks and ETFs and divides the money.</p>
+{% block topbar %}
+  {% if has_portfolio %}<a class="button" href="{{ url_for('show_portfolio') }}" id="view-last">View last portfolio</a>{% endif %}
+{% endblock %}
 
-  <form method="post" action="{{ url_for('suggest') }}" id="suggest-form" novalidate>
+{% block content %}
+<form method="post" action="{{ url_for('suggest') }}" id="suggest-form" class="layout" novalidate>
+
+  <div class="side wide">
+    <div>
+      <h1>Make a portfolio</h1>
+      <p class="muted small">Type the amount to invest. Select one or two strategies. The engine selects the stocks and ETFs and divides the money.</p>
+    </div>
+
     <label class="field">
-      <span>Amount to invest (USD, minimum ${{ '{:,.0f}'.format(min_amount) }})</span>
+      <span class="label">Amount to invest (USD, minimum ${{ '{:,.0f}'.format(min_amount) }})</span>
       <div class="money">
         <span>$</span>
         <input type="number" name="amount" id="amount" min="{{ min_amount|int }}" step="0.01"
@@ -14,37 +21,44 @@
       </div>
     </label>
 
-    <fieldset class="field">
-      <legend>Investment strategies (select one or two)</legend>
-      <div class="strategies">
-        {% for key, s in strategies.items() %}
-        <label class="strategy" id="card-{{ key }}">
-          <input type="checkbox" name="strategies" value="{{ key }}" id="s-{{ key }}"
-                 {% if key in form.get('strategies', []) %}checked{% endif %}>
-          <div>
-            <strong>{{ s.name }}</strong>
-            <p>{{ s.description }}</p>
-            <p class="symbols">
-              {% for h in s.holdings %}<span class="chip">{{ h.symbol }} {{ (h.weight*100)|round|int }}%</span>{% endfor %}
-            </p>
-          </div>
-        </label>
-        {% endfor %}
-      </div>
-    </fieldset>
-
     <label class="field" id="split-field" hidden>
-      <span>Money split: <b id="split-label"></b></span>
+      <span class="label">Money split</span>
+      <span class="mono small" id="split-label"></span>
       <input type="range" name="split" id="split" min="{{ min_split }}" max="{{ max_split }}" step="5"
              value="{{ form.get('split', 50) }}">
+      <div class="ticks"><span>{{ min_split }}%</span><span>50%</span><span>{{ max_split }}%</span></div>
     </label>
 
-    <div class="actions">
-      <button type="submit" class="primary" id="submit">Suggest portfolio</button>
-      {% if has_portfolio %}<a class="button" href="{{ url_for('show_portfolio') }}" id="view-last">View last portfolio</a>{% endif %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="flash {{ cat }}" role="alert" id="flash-{{ loop.index }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <button type="submit" class="primary block" id="submit">Suggest portfolio</button>
+  </div>
+
+  <fieldset class="content strategies-set">
+    <legend>Investment strategies (select one or two)</legend>
+    <div class="strategies">
+      {% for key, s in strategies.items() %}
+      <label class="strategy" id="card-{{ key }}">
+        <input type="checkbox" name="strategies" value="{{ key }}" id="s-{{ key }}"
+               {% if key in form.get('strategies', []) %}checked{% endif %}>
+        <div class="head">
+          <strong>{{ s.name }}</strong>
+          <span class="check" aria-hidden="true">✓</span>
+        </div>
+        <p>{{ s.description }}</p>
+        <div class="chips">
+          {% for h in s.holdings %}<span class="chip">{{ h.symbol }} {{ (h.weight*100)|round|int }}%</span>{% endfor %}
+        </div>
+      </label>
+      {% endfor %}
     </div>
-  </form>
-</section>
+  </fieldset>
+
+</form>
 {% endblock %}
 
 {% block scripts %}
