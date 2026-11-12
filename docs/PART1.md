@@ -159,6 +159,12 @@ We use a **web interface** (Flask, HTML, CSS and Chart.js). Reasons:
 - The page can update the live value without a full reload.
 - The page supports light mode and dark mode. The page follows the setting of the computer.
 
+Page layout (we made the design with the SuperDesign tool):
+
+- Both pages have two columns. On a phone, the columns are one above the other.
+- **Home page:** The left column has the amount field, the money split slider, the error messages and the **Suggest portfolio** button. The right column has the five strategy cards.
+- **Portfolio page:** The top bar has the **Download CSV**, **Change input** and **New portfolio** buttons. The left column has the four key values, the live update status and the selected strategies. The right column has the charts and the tables.
+
 ### 4.2 Map from strategy to stocks and ETFs
 
 | Strategy | Holdings (weight) |
@@ -264,7 +270,7 @@ cmpe285-project/
 3. The page shows the field **Amount to invest (USD, minimum $5,000)**.
 4. The page shows five strategy cards: **Ethical Investing**, **Growth Investing**, **Index Investing**, **Quality Investing** and **Value Investing**.
 5. Each card shows 3 or more symbols with their weights. For example, the Index Investing card shows `VTI 50%`, `IXUS 30%` and `ILTB 20%`.
-6. The page shows the button **Suggest portfolio**.
+6. The page shows the button **Suggest portfolio** in the left column.
 
 ---
 
@@ -283,7 +289,7 @@ cmpe285-project/
 
 **Expected result:**
 
-1. After step 4, the page stays on the home page. A red message shows: **The minimum amount is $5,000 USD.**
+1. After step 4, the page stays on the home page. A red message shows above the **Suggest portfolio** button: **The minimum amount is $5,000 USD.**
 2. The form keeps the input (`4999` and Index Investing).
 3. After step 5 and step 6, the page shows a red error message. The engine does not make a portfolio.
 
@@ -328,10 +334,10 @@ cmpe285-project/
 
 **Expected result:**
 
-1. After step 3, the two selected cards have a blue border. The other three cards become gray. You cannot select them.
+1. After step 3, the two selected cards have a green border and a check mark. The other three cards become faded. You cannot select them.
 2. After step 3, a **Money split** slider shows. The label shows `50% Growth Investing / 50% Value Investing`.
 3. In step 4, the Index Investing card does not become selected.
-4. After step 5, the three gray cards become available again. The split slider is not shown.
+4. After step 5, the three faded cards become available again. The split slider is not shown.
 5. In step 6, the server sends this message: `{"error":"Select no more than two investment strategies."}`
 
 ---
@@ -431,7 +437,7 @@ cmpe285-project/
 
 **Steps:**
 
-1. Find the line under the four boxes at the top of the page. It starts with **Last update**.
+1. In the left column, find the line under the four values (Amount invested, Current value, Gain / loss and Cash not used). It starts with **Last update**.
 2. Read the time of the last update and the source.
 3. Wait 15 seconds. Do not reload the page.
 4. Read the time of the last update again.
@@ -465,7 +471,7 @@ cmpe285-project/
 1. Find the box **Weekly trend (last 5 trading days)**.
 2. Look at the line chart.
 3. Put the mouse pointer on a point of the line chart.
-4. Look at the table under the chart.
+4. Find the table with the column **Date (close)**. It is at the bottom of the right column.
 5. (Optional, API test) Type this URL in the same browser: <http://127.0.0.1:8000/api/history>
 
 **Expected result:**
@@ -488,19 +494,19 @@ cmpe285-project/
 
 **Steps:**
 
-1. Click **Download CSV**.
+1. In the top bar, click **Download CSV**.
 2. Open the file `portfolio.csv` in a spreadsheet program or a text editor.
-3. Go back to the portfolio page. Click **Change input**.
+3. Go back to the portfolio page. In the top bar, click **Change input**.
 4. Look at the form.
 5. Change the amount to `5000`. Click **Suggest portfolio**.
-6. Click **New portfolio**.
+6. In the top bar, click **New portfolio**.
 
 **Expected result:**
 
 1. In step 1, the browser saves the file `portfolio.csv`.
 2. The file has the columns Symbol, Name, Type, Strategy, Percent, Dollars, Buy Price, Shares and Cost. It has one row for each holding and one **CASH** row.
 3. The values in the file are the same as the values in the table on the portfolio page.
-4. After step 3, the home page shows the last input. The amount, the strategies and the split are the same as before. The page shows the button **View last portfolio**.
+4. After step 3, the home page shows the last input. The amount, the strategies and the split are the same as before. The top bar shows the button **View last portfolio**.
 5. After step 5, the engine accepts $5,000 (the minimum). The portfolio page shows **Amount invested** `$5,000.00`.
 6. After step 6, the home page shows an empty form. The button **View last portfolio** is not shown.
 
