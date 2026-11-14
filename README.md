@@ -34,10 +34,6 @@ python -m pytest -q
 
 The tests dont need the internet.
 
-## Documents
-
-- [docs/PART1.md](docs/PART1.md) – Part 1 deliverable: research, design decisions, setup and the ten test cases.
-
 ## zip for export
 
 ```bash
