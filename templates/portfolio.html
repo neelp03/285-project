@@ -62,7 +62,8 @@
       </section>
       <section class="panel pad alloc">
         <h2>How the money is divided</h2>
-        <div class="chart-box"><canvas id="pie" aria-label="Allocation chart" role="img"></canvas></div>
+        <div class="chart-box ring"><canvas id="pie" aria-label="Allocation chart" role="img"></canvas></div>
+        <ul class="legend" id="pie-legend"></ul>
       </section>
     </div>
 
@@ -141,7 +142,8 @@
   const css = getComputedStyle(document.documentElement);
   const token = name => css.getPropertyValue(name).trim();
   const font = { family: "'Inter', sans-serif", size: 11 };
-  const palette = ['#0f5c4d','#c8553d','#2d6a9f','#d9a441','#6d597a','#3c8d7a','#8c5e3c','#5b7db1','#a23b72','#7a7a7a'];
+  const palette = ['#3b6e8f','#8a7f72','#728a7c','#d6c9af','#6b5c73','#5a788c','#a39a8e','#809485'];
+  const colorAt = i => palette[i % palette.length];
 
   function showTime(iso) {
     document.getElementById('updated').textContent = new Date(iso).toLocaleString();
@@ -157,16 +159,21 @@
     if (cash > 0) { labels.push('Cash'); data.push(cash); }
     new Chart(document.getElementById('pie'), {
       type: 'doughnut',
-      data: { labels, datasets: [{ data, backgroundColor: palette, borderWidth: 1, borderColor: token('--surface') }] },
+      data: { labels, datasets: [{ data, backgroundColor: labels.map((_, i) => colorAt(i)), borderWidth: 1, borderColor: token('--surface') }] },
       options: {
         maintainAspectRatio: false,
         cutout: '70%',
         plugins: {
-          legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8, padding: 10, font: { ...font, size: 12 } } },
+          legend: { display: false },
           tooltip: { ...tooltip, callbacks: { label: c => `${c.label}: ${money(c.parsed)}` } }
         }
       }
     });
+    const total = data.reduce((a, b) => a + b, 0);
+    const pct = v => { const x = v / total * 100; return x < 1 ? '<1%' : +x.toFixed(1) + '%'; };
+    document.getElementById('pie-legend').innerHTML = labels.map((l, i) =>
+      `<li><span class="swatch" style="background:${colorAt(i)}"></span><b>${l}</b><span>${pct(data[i])}</span></li>`
+    ).join('');
     const accent = token('--accent');
     new Chart(document.getElementById('trend'), {
       type: 'line',
