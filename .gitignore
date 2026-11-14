@@ -8,3 +8,4 @@ venv/
 instance/
 .superdesign
 .claude/
+.prettierrc
