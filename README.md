@@ -1,8 +1,6 @@
 # Stock Portfolio Suggestion Engine
 
-CMPE 285 term project. A Python web application that suggests a stock and ETF portfolio.
-
-> This document uses ASD-STE100 Simplified Technical English.
+CMPE 285 project. A Python web application that suggests a stock and ETF portfolio.
 
 ## What the application does
 
@@ -28,30 +26,19 @@ Open <http://127.0.0.1:8000> in a web browser.
 - To use a different port, type `PORT=8080 python app.py`.
 - To use the application without the internet, type `PORTFOLIO_OFFLINE=1 python app.py`. This mode uses fixed sample prices.
 
-## Deploy on Render
-
-The file `render.yaml` sets up the application as a Render web service.
-
-1. Push the repository to GitHub.
-2. In the Render dashboard, select **New > Blueprint**.
-3. Connect the GitHub repository. Render reads `render.yaml`.
-4. Select **Apply**.
-
-Render installs the packages, makes a random `SECRET_KEY` and starts the application with Gunicorn.
-
 ## Run the tests
 
 ```bash
 python -m pytest -q
 ```
 
-The tests do not need the internet.
+The tests dont need the internet.
 
 ## Documents
 
 - [docs/PART1.md](docs/PART1.md) – Part 1 deliverable: research, design decisions, setup and the ten test cases.
 
-## Make the zip file for submission
+## zip for export
 
 ```bash
 git archive --format=zip -o ../cmpe285-project.zip --prefix=cmpe285-project/ HEAD
