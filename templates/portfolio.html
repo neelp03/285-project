@@ -141,7 +141,7 @@
   const signed = n => (n >= 0 ? '+' : '−') + money(Math.abs(n));
   const css = getComputedStyle(document.documentElement);
   const token = name => css.getPropertyValue(name).trim();
-  const font = { family: "'Inter', sans-serif", size: 11 };
+  const font = { family: token('--sans'), size: 11 };
   const palette = ['#3b6e8f','#8a7f72','#728a7c','#d6c9af','#6b5c73','#5a788c','#a39a8e','#809485'];
   const colorAt = i => palette[i % palette.length];
 
@@ -150,7 +150,8 @@
   }
   showTime(document.getElementById('updated').dataset.time);
 
-  if (window.Chart) {
+  // Canvas text does not redraw when a web font loads, so draw the charts after it.
+  if (window.Chart) document.fonts.ready.then(() => {
     Chart.defaults.color = token('--muted');
     Chart.defaults.font.family = font.family;
     const tooltip = { backgroundColor: token('--ink'), titleColor: token('--bg'), bodyColor: token('--bg') };
@@ -189,7 +190,7 @@
                   x: { grid: { display: false }, border: { display: false }, ticks: { font } } }
       }
     });
-  }
+  });
 
   function pulse(el) {
     el.classList.remove('pulse');
