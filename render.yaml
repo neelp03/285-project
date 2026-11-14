@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: stock-portfolio-engine
+    name: stonks
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
