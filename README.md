@@ -28,6 +28,17 @@ Open <http://127.0.0.1:8000> in a web browser.
 - To use a different port, type `PORT=8080 python app.py`.
 - To use the application without the internet, type `PORTFOLIO_OFFLINE=1 python app.py`. This mode uses fixed sample prices.
 
+## Deploy on Render
+
+The file `render.yaml` sets up the application as a Render web service.
+
+1. Push the repository to GitHub.
+2. In the Render dashboard, select **New > Blueprint**.
+3. Connect the GitHub repository. Render reads `render.yaml`.
+4. Select **Apply**.
+
+Render installs the packages, makes a random `SECRET_KEY` and starts the application with Gunicorn.
+
 ## Run the tests
 
 ```bash
